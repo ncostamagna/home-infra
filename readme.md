@@ -1,4 +1,7 @@
 # Setup
+```
+minikube addons enable ingress
+```
 
 # Cilium
 ```sh
@@ -9,4 +12,9 @@ helm install cilium ./cilium --namespace kube-system -f ./cilium/values.yaml --c
 # NATS
 ```sh
 helm install nats ./nats --namespace axul -f ./nats/values.yaml --create-namespace
+```
+
+# Nats Back
+```sh
+helm install axul-nats-back ./axul-nats --create-namespace --namespace axul
 ```

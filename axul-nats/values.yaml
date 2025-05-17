@@ -1,0 +1,14 @@
+replicaCount: 1
+
+image:
+  repository: ncostamagna/axul-nats-back
+  tag: 0.0.2
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30003
+
+env:
+  NATS_URL: "nats://nats:4222"

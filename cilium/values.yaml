@@ -2170,7 +2170,7 @@ nodePort:
   # -- Enable the Cilium NodePort service implementation.
   enabled: false
   # -- Port range to use for NodePort services.
-  # range: "30000,32767"
+  range: "30000,32767"
 
   # @schema
   # type: [null, string, array]
