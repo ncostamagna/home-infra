@@ -1,0 +1,12 @@
+# allow-world-to-backend.yaml
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-world-to-backend
+  namespace: axul
+spec:
+  endpointSelector:
+    matchLabels:
+      app: axul-nats-back
+  ingress:
+    - {}

@@ -18,3 +18,13 @@ helm install nats ./nats --namespace axul -f ./nats/values.yaml --create-namespa
 ```sh
 helm install axul-nats-back ./axul-nats --create-namespace --namespace axul
 ```
+
+# Tunnel
+
+```
+minikube tunnel
+```
+
+```sh
+http://127.0.0.1:8080/send
+```
