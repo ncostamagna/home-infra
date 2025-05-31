@@ -5,7 +5,7 @@ metadata:
 spec:
   name: mystream
   subjects: ["orders.*"]
-  storage: memory
+  storage: file
   maxAge: 1h
 ---
 apiVersion: jetstream.nats.io/v1beta2

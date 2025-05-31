@@ -49,7 +49,7 @@ tlsCA:
 ############################################################
 config:
   cluster:
-    enabled: false
+    enabled: true
     port: 6222
     # must be 2 or higher when jetstream is enabled
     replicas: 3
@@ -82,7 +82,7 @@ config:
     patch: []
 
   jetstream:
-    enabled: false
+    enabled: true
 
     fileStore:
       enabled: true
@@ -151,7 +151,7 @@ config:
     patch: []
 
   websocket:
-    enabled: false
+    enabled: true
     port: 8080
     tls:
       enabled: false

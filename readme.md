@@ -12,6 +12,10 @@ helm install cilium ./cilium --namespace kube-system -f ./cilium/values.yaml --c
 # NATS
 ```sh
 helm install nats ./nats --namespace axul -f ./nats/values.yaml --create-namespace
+
+helm upgrade nats ./nats --namespace axul -f ./nats/values.yaml --create-namespace
+
+kubectl port-forward -n axul service/nats 4222:4222
 ```
 
 # Nack
