@@ -26,6 +26,7 @@ helm install nack ./nack --create-namespace --namespace axul
 # Nats Initial
 ```sh
 helm install nats-initial ./nats-initial --create-namespace --namespace axul
+helm upgrade nats-initial ./nats-initial --create-namespace --namespace axul
 ```
 
 
