@@ -407,8 +407,9 @@ promExporter:
   # prometheus pod monitor
   ############################################################
   podMonitor:
-    enabled: false
-
+    enabled: true
+    labels:
+      release: kube-prometheus-stack
     # merge or patch the pod monitor
     # https://prometheus-operator.dev/docs/operator/api/#monitoring.coreos.com/v1.PodMonitor
     merge: {}
@@ -440,9 +441,12 @@ service:
     gateway:
       enabled: false
     monitor:
-      enabled: false
+      enabled: true
     profiling:
       enabled: false
+    promExporter:
+      enabled: true
+      port: 7777
 
   # merge or patch the service
   # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#service-v1-core

@@ -1,0 +1,53 @@
+replicaCount: 1
+name: passit-back
+environment: dev
+project: axul
+
+image:
+  repository: ncostamagna/passit-back
+  tag: "baeaac0db4437105f744d4ec6b7c221e6c6c1334"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 8080
+  targetPort: 8080
+
+env:
+  # Add your environment variables here
+  # Example:
+  # DATABASE_URL: "postgresql://user:password@host:5432/dbname"
+  # REDIS_URL: "redis://redis:6379"
+  # NATS_URL: "nats://nats:4222"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: passit-back.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []

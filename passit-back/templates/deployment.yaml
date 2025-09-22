@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name}}-{{.Values.name}}
+  labels:
+    app: {{.Values.name}}
+    env: dev
+    project: axul
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{.Values.contact.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.contact.name}}
+    spec:
+      containers:
+      - name: {{.Values.contact.name}}
+        image: {{.Values.contact.image.url}}:{{.Values.contact.image.version}}
+        imagePullPolicy: Always
