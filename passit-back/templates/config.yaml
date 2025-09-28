@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Values.name }}-{{ .Values.version }}"
+  labels:
+    app: "{{ .Values.name }}"
+    environment: "{{ .Values.environment }}"
+    version: "{{ .Values.version }}"
+data:
+  .config.yaml: |
+{{ .Values.config | toYaml | indent 4 }}

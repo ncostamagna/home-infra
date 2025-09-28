@@ -1,33 +1,41 @@
 replicaCount: 1
+version: 1
 name: passit-back
-environment: dev
-project: axul
+environment: development
 
-image:
-  repository: ncostamagna/passit-back
-  tag: "baeaac0db4437105f744d4ec6b7c221e6c6c1334"
-  pullPolicy: IfNotPresent
+deployment:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  image:
+    url: ncostamagna/passit-back
+    version: "8b7b76048ee64256134d121ac3031a21e28b8cec"
+    pullPolicy: IfNotPresent
 
-service:
-  type: LoadBalancer
-  port: 8080
-  targetPort: 8080
+  api:
+    grpc:
+      targetPort: 8080
+      nodePort: 30003
 
-env:
-  # Add your environment variables here
-  # Example:
-  # DATABASE_URL: "postgresql://user:password@host:5432/dbname"
-  # REDIS_URL: "redis://redis:6379"
-  # NATS_URL: "nats://nats:4222"
+config:
+  api:
+    grpc:
+      host: localhost
+      port: 8050
 
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 250m
-    memory: 256Mi
+  redis:
+    addr: localhost:6381
+    pass: admin
+    db: 3
 
+  token: my-token
+
+
+# DELETE ALL
 autoscaling:
   enabled: false
   minReplicas: 1

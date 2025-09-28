@@ -36,6 +36,12 @@ helm upgrade nats-initial ./nats-initial --create-namespace --namespace axul
 ```sh
 helm install axul-nats-back ./axul-nats --create-namespace --namespace axul
 ```
+ P
+# Passit Back
+```sh
+helm install passit-back ./passit-back --create-namespace --namespace axul
+helm upgrade passit-back ./passit-back --namespace axul
+```
 
 # Tunnel
 

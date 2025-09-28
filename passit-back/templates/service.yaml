@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name}}-{{.Values.name}}-api
+  name: {{.Values.name}}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{.Values.name}}
-    env: {{.Values.environment}}
-    project: {{.Values.project}}
+    app: "{{ .Values.name }}"
+    environment: "{{ .Values.environment }}"
+    version: "{{ .Values.version }}"
 spec:
   type: NodePort
   selector:
@@ -13,6 +14,6 @@ spec:
   ports:
     - name: http
       protocol: TCP
-      port: {{.Values.port.http}}
-      targetPort: {{.Values.port.http}}
-      nodePort: 30003
+      port: {{.Values.config.api.grpc.port}}
+      targetPort: {{.Values.deployment.api.grpc.targetPort}}
+      nodePort: {{.Values.deployment.api.grpc.nodePort}}
