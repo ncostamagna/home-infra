@@ -32,7 +32,7 @@ config:
     pass: admin
     db: 3
 
-  token: my-token
+
 
 
 # DELETE ALL
