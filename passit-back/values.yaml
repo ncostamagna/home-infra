@@ -13,7 +13,7 @@ deployment:
       memory: 256Mi
   image:
     url: ncostamagna/passit-back
-    version: "8b7b76048ee64256134d121ac3031a21e28b8cec"
+    version: "6ad9e6ac8f65c89d3efc1dbdc2f41f92590331b5"
     pullPolicy: IfNotPresent
 
   api:

@@ -4,10 +4,27 @@ minikube addons enable ingress
 ```
 
 # Cilium
+
 ```sh
+# add repo
+helm repo add cilium https://helm.cilium.io/
+
+helm pull cilium/cilium --untar
+
+# create file
+# helm show values cilium/cilium > ./cilium/values.yaml
+
 helm install cilium ./cilium --namespace kube-system -f ./cilium/values.yaml --create-namespace
 ```
 
+# Argo
+
+```sh
+# in 99-argo/manifest
+kubectl apply -k . --server-side  
+```
+
+local pass: 1O4FdHi5zU5b7-1N
 
 # NATS
 ```sh
@@ -36,7 +53,6 @@ helm upgrade nats-initial ./nats-initial --create-namespace --namespace axul
 ```sh
 helm install axul-nats-back ./axul-nats --create-namespace --namespace axul
 ```
- P
 # Passit Back
 ```sh
 helm install passit-back ./passit-back --create-namespace --namespace axul
