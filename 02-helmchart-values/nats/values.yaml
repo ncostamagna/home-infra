@@ -407,7 +407,7 @@ promExporter:
   # prometheus pod monitor
   ############################################################
   podMonitor:
-    enabled: true
+    enabled: false
     labels:
       release: kube-prometheus-stack
     # merge or patch the pod monitor
