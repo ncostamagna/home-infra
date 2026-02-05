@@ -2,6 +2,8 @@
 ```
 minikube addons enable ingress
 ```
+- first install cilium
+- then argocd
 
 # Cilium
 
@@ -15,6 +17,8 @@ helm pull cilium/cilium --untar
 # helm show values cilium/cilium > ./cilium/values.yaml
 
 helm install cilium ./cilium --namespace kube-system -f ./cilium/values.yaml --create-namespace
+
+helm upgrade --install cilium ./cilium -n kube-system --set ipv4NativeRoutingCIDR=10.0.0.0/8 --set ipMasqAgent.enabled=false --set bpf.masquerade=true                      
 ```
 
 # Argo

@@ -8,13 +8,6 @@ spec:
   generators:
     - list:
         elements:
-          - name: cilium
-            dst_namespace: kube-system
-            dst_cluster: in-cluster
-            helmchart_repo_url: https://helm.cilium.io/
-            helmchart_name: cilium
-            helmchart_target_revision: 1.16.5
-            values_branch: main
           - name: nats
             dst_namespace: nats
             dst_cluster: in-cluster
