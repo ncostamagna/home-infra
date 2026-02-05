@@ -1,0 +1,93 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: prod-appsets-devops
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - list:
+        elements:
+          - name: cilium
+            dst_namespace: kube-system
+            dst_cluster: in-cluster
+            helmchart_repo_url: https://helm.cilium.io/
+            helmchart_name: cilium
+            helmchart_target_revision: 1.16.5
+            values_branch: main
+          - name: nats
+            dst_namespace: nats
+            dst_cluster: in-cluster
+            helmchart_repo_url: https://nats-io.github.io/k8s/helm/charts/
+            helmchart_name: nats
+            helmchart_target_revision: 1.2.9
+            values_branch: main
+
+  template:
+    metadata:
+      name: "devops-{{ .env }}-{{ .name }}"
+      namespace: argocd
+    spec:
+      project: default
+      sources:
+        - repoURL: "{{ .helmchart_repo_url }}"
+        - repoURL: https://github.com/ncostamagna/home-infra.git
+      destination:
+        name: "{{ .dst_cluster }}"
+        namespace: "{{ .dst_namespace }}"
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        retry:
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m0s
+          limit: 2
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+          - CreateNamespace=true
+          - Replace=true
+          - PruneLast=true
+          - PrunePropagationPolicy=foreground
+          - FailOnSharedResource=true
+          - RespectIgnoreDifferences=true
+
+  templatePatch: |
+    metadata:
+      name: 'devops-{{ .env | default "shared-svc" }}-{{ .name }}'
+      annotations:
+        {{- if .annotations }}
+        {{- toYaml .annotations | nindent 8 }}
+        {{- end }}
+    spec:
+      destination:
+        name: '{{ .dst_cluster | default "in-cluster"}}'
+      syncPolicy:
+        managedNamespaceMetadata:
+          labels:
+            rollouts: '{{ .rollouts | default "enabled" }}'
+      sources:
+        {{- if .helmchart_repo_url }}
+        - repoURL: '{{ .helmchart_repo_url }}'
+          {{- if .path }}
+          path: '{{ .path }}'
+          {{- end }}
+          {{- if .helmchart_name }}
+          chart: '{{ .helmchart_name }}'
+          {{- end }}
+          targetRevision: '{{ .helmchart_target_revision }}'
+          helm:
+            valueFiles:
+              - '$values/02-helmchart-values/{{ .name }}/{{ .env | default "values" }}.yaml'
+        - repoURL: https://github.com/ncostamagna/home-infra.git
+          targetRevision: '{{ .values_branch | default "main"}}'
+          ref: values
+        {{- end }}
+
+        {{- if not .helmchart_repo_url }}
+        - repoURL: https://github.com/ncostamagna/home-infra.git
+          targetRevision: '{{ .values_branch | default "main"}}'
+          path: 04-apps/{{ .name }}
+        {{- end }}
