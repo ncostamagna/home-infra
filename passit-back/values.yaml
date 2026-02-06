@@ -35,7 +35,7 @@ config:
 
   redis:
     addr: localhost:6381
-    pass: admin
+    pass: kX9#mPvL2$nQwR7jF4hB
     db: 3
 
  

@@ -15,6 +15,13 @@ spec:
             helmchart_name: nats
             helmchart_target_revision: 1.2.9
             values_branch: main
+          - name: redis
+            dst_namespace: redis
+            dst_cluster: in-cluster
+            helmchart_repo_url: https://charts.bitnami.com/bitnami
+            helmchart_name: redis
+            helmchart_target_revision: 20.6.0
+            values_branch: main
 
   template:
     metadata:
