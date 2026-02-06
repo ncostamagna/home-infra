@@ -34,7 +34,7 @@ config:
       port: 8080
 
   redis:
-    addr: localhost:6379
+    addr: devops-shared-svc-redis-master.redis.svc.cluster.local:6379
     pass: kX9#mPvL2$nQwR7jF4hB
     db: 3
 
