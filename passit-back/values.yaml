@@ -18,14 +18,20 @@ deployment:
 
   api:
     grpc:
-      targetPort: 8080
+      targetPort: 8050
       nodePort: 30003
+    http:
+      targetPort: 8080
+      nodePort: 30004
 
 config:
   api:
     grpc:
       host: localhost
       port: 8050
+    http:
+      host: localhost
+      port: 8080
 
   redis:
     addr: localhost:6381

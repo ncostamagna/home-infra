@@ -12,8 +12,13 @@ spec:
   selector:
     app: {{.Values.name}}
   ports:
-    - name: http
+    - name: grpc
       protocol: TCP
       port: {{.Values.config.api.grpc.port}}
       targetPort: {{.Values.deployment.api.grpc.targetPort}}
       nodePort: {{.Values.deployment.api.grpc.nodePort}}
+    - name: http
+      protocol: TCP
+      port: {{.Values.config.api.http.port}}
+      targetPort: {{.Values.deployment.api.http.targetPort}}
+      nodePort: {{.Values.deployment.api.http.nodePort}}
