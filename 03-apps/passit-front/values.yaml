@@ -1,0 +1,23 @@
+replicaCount: 1
+version: 1
+name: passit-front
+environment: development
+
+deployment:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  image:
+    url: ncostamagna/passit-front
+    version: "latest"
+    pullPolicy: IfNotPresent
+  nodePort: 30005
+
+config:
+  port: 3000
+  baseUrl: "https://passit.com"
+  grpcHost: "passit-back.default.svc.cluster.local:8050"

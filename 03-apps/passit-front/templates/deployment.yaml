@@ -1,0 +1,40 @@
+apiVersion: apps/v1                                                
+kind: Deployment
+metadata:
+  name: {{.Values.name}}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ .Values.name }}"
+    environment: "{{ .Values.environment }}"
+    version: "{{ .Values.version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{.Values.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.name}}
+    spec:
+      containers:
+      - name: {{.Values.name}}
+        image: {{.Values.deployment.image.url}}:{{.Values.deploymen
+t.image.version}}
+        imagePullPolicy: Always
+        env:
+          - name: BASE_URL
+            value: "{{ .Values.config.baseUrl }}"
+          - name: GRPC_HOST
+            value: "{{ .Values.config.grpcHost }}"
+        resources:
+          requests:
+            memory: {{ .Values.deployment.resources.requests.memory
+  | default "50Mi" | quote }}
+            cpu: {{ .Values.deployment.resources.requests.cpu |
+default "0.5" | quote }}
+          limits:
+            memory: {{ .Values.deployment.resources.limits.memory |
+  default "1024Mi" | quote }}
+            cpu: {{ .Values.deployment.resources.limits.cpu |
+default "1" | quote }}
