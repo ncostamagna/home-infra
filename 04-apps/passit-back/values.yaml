@@ -1,0 +1,67 @@
+replicaCount: 1
+version: 1
+name: passit-back
+environment: development
+
+deployment:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  image:
+    url: ncostamagna/passit-back
+    version: "66080f31d25ccea67401cd8ca84a83415edeace4"
+    pullPolicy: IfNotPresent
+
+  api:
+    grpc:
+      targetPort: 8050
+      nodePort: 30003
+    http:
+      targetPort: 8080
+      nodePort: 30004
+
+config:
+  api:
+    grpc:
+      host: localhost
+      port: 8050
+    http:
+      host: localhost
+      port: 8080
+
+  redis:
+    addr: devops-shared-svc-redis-master.redis.svc.cluster.local:6379
+    pass: kX9#mPvL2$nQwR7jF4hB
+    db: 3
+
+ 
+
+
+# DELETE ALL
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: passit-back.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []

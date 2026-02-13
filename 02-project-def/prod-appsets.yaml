@@ -80,7 +80,7 @@ spec:
           targetRevision: '{{ .helmchart_target_revision }}'
           helm:
             valueFiles:
-              - '$values/02-helmchart-values/{{ .name }}/{{ .env | default "values" }}.yaml'
+              - '$values/03-helmchart-values/{{ .name }}/{{ .env | default "values" }}.yaml'
         - repoURL: https://github.com/ncostamagna/home-infra.git
           targetRevision: '{{ .values_branch | default "main"}}'
           ref: values
