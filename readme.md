@@ -1,9 +1,12 @@
 # Setup
+
+- first install cilium
+- then argocd
+
 ```
 minikube addons enable ingress
 ```
-- first install cilium
-- then argocd
+- install minikube in 01-setup
 
 # Cilium
 
@@ -29,6 +32,24 @@ kubectl apply -k . --server-side
 ```
 
 local pass: 1O4FdHi5zU5b7-1N
+
+
+```yaml
+# passit back example
+project: default
+source:
+  repoURL: https://github.com/ncostamagna/home-infra
+  path: passit-back
+  targetRevision: HEAD
+destination:
+  server: https://kubernetes.default.svc
+  namespace: axul
+syncPolicy:
+  automated:
+    prune: true
+    enabled: true
+
+```
 
 # NATS
 ```sh
@@ -67,7 +88,11 @@ helm upgrade passit-back ./passit-back --namespace axul
 
 ```
 minikube tunnel
+
+# argo
+https://argocd.127.0.0.1.nip.io/applications
 ```
+
 
 ```sh
 http://127.0.0.1:8080/send

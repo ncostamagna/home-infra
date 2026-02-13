@@ -22,6 +22,8 @@ spec:
             helmchart_name: redis
             helmchart_target_revision: 24.1.3
             values_branch: main
+          - name: passit-back
+            dst_namespace: axul
 
   template:
     metadata:

@@ -13,7 +13,7 @@ deployment:
       memory: 256Mi
   image:
     url: ncostamagna/passit-front
-    version: "latest"
+    version: "5ec16f89ff6c4e0d1abe6eb2bc416476aa7d06f1"
     pullPolicy: IfNotPresent
   nodePort: 30005
 
