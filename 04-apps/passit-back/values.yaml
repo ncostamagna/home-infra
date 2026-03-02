@@ -27,10 +27,10 @@ deployment:
 config:
   api:
     grpc:
-      host: localhost
+      host: "0.0.0.0"
       port: 8050
     http:
-      host: localhost
+      host: "0.0.0.0"
       port: 8080
 
   redis:
