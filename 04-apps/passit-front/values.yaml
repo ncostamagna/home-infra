@@ -19,8 +19,8 @@ deployment:
 
 config:
   port: 3000
-  baseUrl: "https://passit.com"
-  grpcHost: "passit-back.default.svc.cluster.local:8050"
+  baseUrl: "http://passit.127.0.0.1.nip.io"
+  grpcHost: "passit-back.axul.svc.cluster.local:8050"
 
 gateway:
   host: "passit.127.0.0.1.nip.io"
