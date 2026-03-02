@@ -26,6 +26,18 @@ spec:
             value: "{{ .Values.config.baseUrl }}"
           - name: GRPC_HOST
             value: "{{ .Values.config.grpcHost }}"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.config.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.config.port }}
+          initialDelaySeconds: 15
+          periodSeconds: 10
         resources:
           requests:
             memory: {{ .Values.deployment.resources.requests.memory
