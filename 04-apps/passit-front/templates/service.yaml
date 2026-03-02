@@ -15,5 +15,5 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.config.port }}
-      targetPort: 3000
+      targetPort: {{ .Values.config.port }}
       nodePort: {{ .Values.deployment.nodePort }}

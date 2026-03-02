@@ -8,6 +8,7 @@ minikube addons enable ingress
 ```
 - install minikube in 01-setup
 
+if you have errors with argocd, delete the pod: `pod/argocd-repo-server-[id]`
 # Cilium
 
 ```sh

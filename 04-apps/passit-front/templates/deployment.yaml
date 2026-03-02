@@ -19,8 +19,7 @@ spec:
     spec:
       containers:
       - name: {{.Values.name}}
-        image: {{.Values.deployment.image.url}}:{{.Values.deploymen
-t.image.version}}
+        image: {{.Values.deployment.image.url}}:{{.Values.deployment.image.version}}
         imagePullPolicy: Always
         env:
           - name: BASE_URL

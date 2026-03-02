@@ -24,6 +24,8 @@ spec:
             values_branch: main
           - name: passit-back
             dst_namespace: axul
+          - name: passit-front
+            dst_namespace: axul
 
   template:
     metadata:
