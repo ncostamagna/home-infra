@@ -1,27 +1,38 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
 metadata:
-  name: argocd-server-ingress
+  name: argocd-gateway
   namespace: argocd
-  annotations:
-    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true" remove redirect
-    # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
-  ingressClassName: nginx
-  rules:
-  - host: argocd.127.0.0.1.nip.io # minikube ip
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: argocd-server
-            port:
-              number: 443
-              #name: https
-  #tls:
-  #- hosts:
-    #- argocd.127.0.0.1.nip.io
-    #secretName: argocd-server-tls
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: TLS
+    tls:
+      mode: PASSTHROUGH
+    hosts:
+    - argocd.127.0.0.1.nip.io
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  hosts:
+  - argocd.127.0.0.1.nip.io
+  gateways:
+  - argocd-gateway
+  tls:
+  - match:
+    - port: 443
+      sniHosts:
+      - argocd.127.0.0.1.nip.io
+    route:
+    - destination:
+        host: argocd-server
+        port:
+          number: 443

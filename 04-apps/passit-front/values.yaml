@@ -19,8 +19,9 @@ deployment:
 
 config:
   port: 3000
-  baseUrl: "http://passit.127.0.0.1.nip.io"
+  baseUrl: "https://passit.127.0.0.1.nip.io"
   grpcHost: "passit-back.axul.svc.cluster.local:8050"
 
 gateway:
   host: "passit.127.0.0.1.nip.io"
+  tlsSecret: "passit-front-tls"
