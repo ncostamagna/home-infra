@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts:
+  - {{ .Values.gateway.host }}
+  gateways:
+  - {{ .Values.name }}-gateway
+  http:
+  - route:
+    - destination:
+        host: {{ .Values.name }}
+        port:
+          number: {{ .Values.config.port }}

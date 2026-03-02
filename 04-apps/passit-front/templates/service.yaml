@@ -8,7 +8,7 @@ metadata:
     environment: "{{ .Values.environment }}"
     version: "{{ .Values.version }}"
 spec:
-  type: NodePort
+  type: {{ .Values.deployment.serviceType }}
   selector:
     app: {{.Values.name}}
   ports:
@@ -16,4 +16,3 @@ spec:
       protocol: TCP
       port: {{ .Values.config.port }}
       targetPort: {{ .Values.config.port }}
-      nodePort: {{ .Values.deployment.nodePort }}

@@ -15,9 +15,12 @@ deployment:
     url: ncostamagna/passit-front
     version: "5ec16f89ff6c4e0d1abe6eb2bc416476aa7d06f1"
     pullPolicy: IfNotPresent
-  nodePort: 30005
+  serviceType: ClusterIP
 
 config:
   port: 3000
   baseUrl: "https://passit.com"
   grpcHost: "passit-back.default.svc.cluster.local:8050"
+
+gateway:
+  host: "passit.127.0.0.1.nip.io"
