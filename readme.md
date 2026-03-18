@@ -25,6 +25,15 @@ helm install cilium ./cilium --namespace kube-system -f ./cilium/values.yaml --c
 helm upgrade --install cilium ./cilium -n kube-system --set ipv4NativeRoutingCIDR=10.0.0.0/8 --set ipMasqAgent.enabled=false --set bpf.masquerade=true                      
 ```
 
+# Istio
+
+```sh
+helm install istio-base ./base -n istio-system --create-namespace                                    
+helm install istiod ./istiod -n istio-system          
+helm install istio-ingressgateway ./gateway -n istio-system
+```
+
+
 # Argo
 
 ```sh
@@ -34,22 +43,11 @@ kubectl apply -k . --server-side
 
 local pass: 1O4FdHi5zU5b7-1N
 
+# Cert Local
+```
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=passit.127.0.0.1.nip.io"
 
-```yaml
-# passit back example
-project: default
-source:
-  repoURL: https://github.com/ncostamagna/home-infra
-  path: passit-back
-  targetRevision: HEAD
-destination:
-  server: https://kubernetes.default.svc
-  namespace: axul
-syncPolicy:
-  automated:
-    prune: true
-    enabled: true
-
+kubectl create secret tls passit-front-tls --cert=cert.pem --key=key.pem -n istio-system
 ```
 
 # NATS
