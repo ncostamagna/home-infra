@@ -64,7 +64,11 @@ echo 'deb [signed-by=/usr/share/keyrings/cloudflare-public-v2.gpg] https://pkg.c
 sudo apt-get update && sudo apt-get install cloudflared
 
 # Setup
-sudo cloudflared service install [token]
+# NO sudo cloudflared service install [token]
+
+kubectl apply -f 01-setup/cloudflare/namespace.yaml
+kubectl apply -f 01-setup/cloudflare/secret.yaml
+kubectl apply -f 01-setup/cloudflare/deployment.yaml
 ```
 
 # NATS

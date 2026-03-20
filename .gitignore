@@ -1,4 +1,3 @@
 */templates/secret.yaml
-*/*/secret.yaml
 **.pem
-/secret/*
+/secret/*.md
