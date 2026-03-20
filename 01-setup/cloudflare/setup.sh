@@ -3,7 +3,7 @@
 # The credentials secret is NOT stored in git — run this script on your ThinkPad.
 
 TUNNEL_NAME="home-infra"
-DOMAIN="<YOUR-DOMAIN>"  # e.g. example.com
+DOMAIN="ncostamagna.com"  # e.g. example.com
 
 # 1. Login to Cloudflare (opens browser)
 cloudflared tunnel login
@@ -24,8 +24,8 @@ kubectl create secret generic tunnel-credentials \
   --dry-run=client -o yaml | kubectl apply -f -
 
 # 5. Register DNS entries (one per hostname)
-cloudflared tunnel route dns $TUNNEL_NAME argocd.$DOMAIN
-cloudflared tunnel route dns $TUNNEL_NAME passit.$DOMAIN
+# cloudflared tunnel route dns $TUNNEL_NAME argocd.$DOMAIN
+# cloudflared tunnel route dns $TUNNEL_NAME passit.$DOMAIN
 
 echo ""
 echo "Done. Update <TUNNEL-ID> in configmap.yaml with: $TUNNEL_ID"

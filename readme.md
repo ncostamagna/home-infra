@@ -50,6 +50,23 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -node
 kubectl create secret tls passit-front-tls --cert=cert.pem --key=key.pem -n istio-system
 ```
 
+# ClaudeFlare Tunnel
+
+```sh
+# Add cloudflare gpg key
+sudo mkdir -p --mode=0755 /usr/share/keyrings
+curl -fsSL https://pkg.cloudflare.com/cloudflare-public-v2.gpg | sudo tee /usr/share/keyrings/cloudflare-public-v2.gpg >/dev/null
+
+# Add this repo to your apt repositories
+echo 'deb [signed-by=/usr/share/keyrings/cloudflare-public-v2.gpg] https://pkg.cloudflare.com/cloudflared any main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
+
+# install cloudflared
+sudo apt-get update && sudo apt-get install cloudflared
+
+# Setup
+sudo cloudflared service install [token]
+```
+
 # NATS
 ```sh
 helm uninstall nats --namespace axul

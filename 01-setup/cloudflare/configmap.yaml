@@ -8,10 +8,10 @@ data:
     tunnel: <TUNNEL-ID>
     credentials-file: /etc/cloudflared/credentials.json
     ingress:
-      - hostname: argocd.<YOUR-DOMAIN>
+      - hostname: argocd.ncostamagna.com
         service: https://argocd-server.argocd.svc.cluster.local:443
         originRequest:
           noTLSVerify: true
-      - hostname: passit.<YOUR-DOMAIN>
+      - hostname: passit.ncostamagna.com
         service: http://passit-front.default.svc.cluster.local:80
       - service: http_status:404
