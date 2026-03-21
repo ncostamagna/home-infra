@@ -5,7 +5,7 @@ metadata:
   namespace: cloudflared
 data:
   config.yaml: |
-    tunnel: <TUNNEL-ID>
+    tunnel: 28bbc94f-411d-4c67-9399-2cfce007e206
     credentials-file: /etc/cloudflared/credentials.json
     ingress:
       - service: http://istio-ingressgateway.istio-system.svc.cluster.local:80
