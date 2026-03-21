@@ -24,4 +24,4 @@ config:
 
 gateway:
   host: "passit.ncostamagna.com"
-  tlsSecret: "passit-front-tls"
+

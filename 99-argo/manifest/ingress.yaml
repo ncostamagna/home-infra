@@ -8,13 +8,11 @@ spec:
     istio: ingressgateway
   servers:
   - port:
-      number: 443
-      name: https
-      protocol: TLS
-    tls:
-      mode: PASSTHROUGH
+      number: 80
+      name: http
+      protocol: HTTP
     hosts:
-    - argocd.127.0.0.1.nip.io
+    - argocd.ncostamagna.com
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -23,16 +21,12 @@ metadata:
   namespace: argocd
 spec:
   hosts:
-  - argocd.127.0.0.1.nip.io
+  - argocd.ncostamagna.com
   gateways:
   - argocd-gateway
-  tls:
-  - match:
-    - port: 443
-      sniHosts:
-      - argocd.127.0.0.1.nip.io
-    route:
+  http:
+  - route:
     - destination:
         host: argocd-server
         port:
-          number: 443
+          number: 80

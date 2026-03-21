@@ -18,3 +18,19 @@ patches:
     target:
       kind: Service
       name: argocd-server
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: argocd-server
+      spec:
+        template:
+          spec:
+            containers:
+            - name: argocd-server
+              args:
+              - argocd-server
+              - --insecure
+    target:
+      kind: Deployment
+      name: argocd-server
