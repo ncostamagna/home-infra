@@ -66,9 +66,15 @@ sudo apt-get update && sudo apt-get install cloudflared
 # Setup
 # NO sudo cloudflared service install [token]
 
+cloudflared tunnel login
+cloudflared tunnel delete home-infra   # delete via UI  
+cloudflared tunnel create home-infra   
+
 kubectl apply -f 01-setup/cloudflare/namespace.yaml
 kubectl apply -f 01-setup/cloudflare/secret.yaml
 kubectl apply -f 01-setup/cloudflare/deployment.yaml
+
+kubectl create secret generic tunnel-credentials --from-file=credentials.json=$HOME/.cloudflared/{id}.json -n cloudflared
 ```
 
 # NATS
