@@ -1,3 +1,14 @@
 */templates/secret.yaml
 **.pem
 /secret/*.md
+
+# Local .terraform directories
+98-terra/.terraform/
+
+# Terraform state files (contain sensitive data in plaintext)
+98-terra/*.tfstate
+98-terra/*.tfstate.backup
+
+# Sensitive variable files
+98-terra/*.tfvars
+98-terra/*.tfvars.json

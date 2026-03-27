@@ -5,6 +5,10 @@ resource "aws_kms_key" "vault_unseal" {
   deletion_window_in_days = 30
   enable_key_rotation     = true
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
