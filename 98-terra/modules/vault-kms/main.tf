@@ -67,7 +67,3 @@ resource "aws_iam_user_policy" "vault_unseal" {
     ]
   })
 }
-
-resource "aws_iam_access_key" "vault_unseal" {
-  user = aws_iam_user.vault_unseal.name
-}
