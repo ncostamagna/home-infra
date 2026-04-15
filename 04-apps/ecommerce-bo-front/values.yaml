@@ -1,0 +1,27 @@
+replicaCount: 1
+version: 1
+name: ecommerce-bo-front
+environment: development
+
+deployment:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  image:
+    url: ncostamagna/ecommerce-bo-front
+    version: "4c9b953f1a6d8ca20df3e1ebd90febb0c4a5e3ca"
+    pullPolicy: IfNotPresent
+  serviceType: ClusterIP
+
+config:
+  port: 3000
+  baseUrl: "https://ecommerce-bo.ncostamagna.com"
+  urlHost: "ecommerce-back.lapaltech.svc.cluster.local:8050"
+
+gateway:
+  host: "ecommerce-bo.ncostamagna.com"
+

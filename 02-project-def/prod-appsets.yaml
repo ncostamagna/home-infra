@@ -33,6 +33,10 @@ spec:
             dst_namespace: axul
           - name: passit-front
             dst_namespace: axul
+          - name: ecommerce-back
+            dst_namespace: lapaltech
+          - name: ecommerce-bo-front
+            dst_namespace: lapaltech
 
   template:
     metadata:

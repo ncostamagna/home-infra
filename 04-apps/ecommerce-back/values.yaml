@@ -1,0 +1,60 @@
+replicaCount: 1
+version: 1
+name: ecommerce-back
+environment: development
+
+deployment:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  image:
+    url: ncostamagna/ecommerce-back
+    version: "1ed08fcb004fd35c59d32a961ab557f3387e3b1f"
+    pullPolicy: IfNotPresent
+
+  api:
+    http:
+      targetPort: 8020
+      nodePort: 30009
+
+config:
+  api:
+    http:
+      host: "0.0.0.0"
+      port: 8020
+  redis:
+    addr: devops-shared-svc-redis-master.redis.svc.cluster.local:6379
+    pass: kX9#mPvL2$nQwR7jF4hB
+    db: 3
+
+ 
+
+
+# DELETE ALL
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Ingress configuration
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: passit-back.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []

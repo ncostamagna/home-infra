@@ -13,3 +13,4 @@
 # Sensitive variable files
 98-terra/*.tfvars
 98-terra/*.tfvars.json
+04-apps/*/*/secret.yaml

@@ -77,6 +77,18 @@ kubectl apply -f 01-setup/cloudflare/deployment.yaml
 kubectl create secret generic tunnel-credentials --from-file=credentials.json=$HOME/.cloudflared/{id}.json -n cloudflared
 ```
 
+# Vault
+
+```sh
+# vault setup
+kubectl exec -it devops-shared-svc-vault-0 -n vault -- vault operator init
+
+# if the pod fail delete the pod and the volume
+kubectl delete pvc -n vault -l app.kubernetes.io/name=vault
+kubectl delete pod devops-shared-svc-vault-0 -n vault
+
+```
+
 # NATS
 ```sh
 helm uninstall nats --namespace axul

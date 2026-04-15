@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.name}}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ .Values.name }}"
+    environment: "{{ .Values.environment }}"
+    version: "{{ .Values.version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{.Values.name}}
+  template:
+    metadata:
+      # esto reinicia el pod cada vez que hay cambies en el configmap
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      labels:
+        app: {{.Values.name}}
+    spec:
+      containers:
+      - name: {{.Values.name}}
+        image: {{.Values.deployment.image.url}}:{{.Values.deployment.image.version}}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: {{ .Values.deployment.resources.requests.memory | default "50Mi" | quote }}
+            cpu: {{ .Values.deployment.resources.requests.cpu | default "0.5" | quote }}
+          limits:
+            memory: {{ .Values.deployment.resources.limits.memory | default "1024Mi" | quote }}
+            cpu: {{ .Values.deployment.resources.limits.cpu | default "1" | quote }}
+        volumeMounts:
+          - mountPath: /app/.config.yaml
+            name: config-volume
+            readOnly: true
+            subPath: .config.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: "{{ .Values.name }}-{{ .Values.version }}"
