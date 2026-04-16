@@ -145,3 +145,9 @@ helm search repo nats/nack
 # pull
 helm pull nats/nack --untar --version 0.28.1
 ```
+
+# Server
+
+```sh
+ssh nahuel@192.168.0.115
+```

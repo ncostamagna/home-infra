@@ -13,14 +13,14 @@ deployment:
       memory: 256Mi
   image:
     url: ncostamagna/ecommerce-bo-front
-    version: "4c9b953f1a6d8ca20df3e1ebd90febb0c4a5e3ca"
+    version: "a0e1712c50b0ec7fcd694b0a17a9f84ac734fa13"
     pullPolicy: IfNotPresent
   serviceType: ClusterIP
 
 config:
   port: 3000
   baseUrl: "https://ecommerce-bo.ncostamagna.com"
-  urlHost: "ecommerce-back.lapaltech.svc.cluster.local:8050"
+  backendUrl: "ecommerce-back.lapaltech.svc.cluster.local:8050"
 
 gateway:
   host: "ecommerce-bo.ncostamagna.com"
