@@ -20,7 +20,18 @@ deployment:
     http:
       targetPort: 8020
       nodePort: 30009
-
+secrets:
+  database:
+    url:
+      name: ecommerce-back-db
+      key: url
+  redis:
+    addr:
+      name: ecommerce-back-redis
+      key: addr
+    password:
+      name: ecommerce-back-redis
+      key: password
 config:
   app:
     port: 8020
@@ -30,8 +41,6 @@ config:
     url: postgres://ecommerce:ecommerce@localhost:5442/ecommerce?sslmode=disable
 
   redis:
-    addr: devops-shared-svc-redis-master.redis.svc.cluster.local:6379
-    password: kX9#mPvL2$nQwR7jF4hB
     db: 3
 
   jwt:

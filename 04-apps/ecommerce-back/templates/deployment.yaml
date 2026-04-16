@@ -36,6 +36,22 @@ spec:
             name: config-volume
             readOnly: true
             subPath: .config.yaml
+        env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: "{{ .Values.secrets.database.url.name }}"
+                key: "{{ .Values.secrets.database.url.key }}"
+          - name: REDIS_ADDR
+            valueFrom:
+              secretKeyRef:
+                name: "{{ .Values.secrets.redis.addr.name }}"
+                key: "{{ .Values.secrets.redis.addr.key }}"
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "{{ .Values.secrets.redis.password.name }}"
+                key: "{{ .Values.secrets.redis.password.key }}"
       volumes:
         - name: config-volume
           configMap:
