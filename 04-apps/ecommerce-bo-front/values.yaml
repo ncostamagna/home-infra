@@ -20,7 +20,7 @@ deployment:
 config:
   port: 3000
   baseUrl: "https://ecommerce-bo.ncostamagna.com"
-  backendUrl: "ecommerce-back.lapaltech.svc.cluster.local:8050"
+  backendUrl: "ecommerce-back.lapaltech.svc.cluster.local:8020"
 
 gateway:
   host: "ecommerce-bo.ncostamagna.com"
