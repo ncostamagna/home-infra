@@ -30,8 +30,12 @@ config:
     addr: devops-shared-svc-redis-master.redis.svc.cluster.local:6379
     pass: kX9#mPvL2$nQwR7jF4hB
     db: 3
-
- 
+  database:
+    url: pepito
+  jwtSecret: lalala
+  emails:
+    resend:
+      key: pepepe
 
 
 # DELETE ALL

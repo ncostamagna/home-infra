@@ -74,6 +74,8 @@ kubectl apply -f 01-setup/cloudflare/namespace.yaml
 kubectl apply -f 01-setup/cloudflare/secret.yaml
 kubectl apply -f 01-setup/cloudflare/deployment.yaml
 
+cloudflared tunnel route dns home-infra ecommerce-bo.ncostamagna.com
+
 kubectl create secret generic tunnel-credentials --from-file=credentials.json=$HOME/.cloudflared/{id}.json -n cloudflared
 ```
 
