@@ -13,7 +13,7 @@ deployment:
       memory: 256Mi
   image:
     url: ncostamagna/ecommerce-back
-    version: "1ed08fcb004fd35c59d32a961ab557f3387e3b1f"
+    version: "877c659b21025749c9d1e4d0c51c914133ae0588"
     pullPolicy: IfNotPresent
 
   api:
@@ -22,20 +22,32 @@ deployment:
       nodePort: 30009
 
 config:
-  api:
-    http:
-      host: "0.0.0.0"
-      port: 8020
+  app:
+    port: 8020
+    env: development
+
+  database:
+    url: postgres://ecommerce:ecommerce@localhost:5442/ecommerce?sslmode=disable
+
   redis:
     addr: devops-shared-svc-redis-master.redis.svc.cluster.local:6379
-    pass: kX9#mPvL2$nQwR7jF4hB
+    password: kX9#mPvL2$nQwR7jF4hB
     db: 3
-  database:
-    url: pepito
-  jwtSecret: lalala
-  emails:
-    resend:
-      key: pepepe
+
+  jwt:
+    secret: supersecretkey
+    expiry_hours: 24
+
+  resend:
+    api_key: re_MAEg8pdk_8K9asa6NMhYH9ajkbxDj2cpU
+
+  s3:
+    bucket: ecommerce
+    public_url: http://localhost:4566/ecommerce
+    region: us-east-1
+    endpoint: http://localhost:4566
+    access_key_id: test
+    secret_access_key: test
 
 
 # DELETE ALL
