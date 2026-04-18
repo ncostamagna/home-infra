@@ -13,7 +13,7 @@ deployment:
       memory: 256Mi
   image:
     url: ncostamagna/ecommerce-bo-front
-    version: "a0e1712c50b0ec7fcd694b0a17a9f84ac734fa13"
+    version: "62d76f63b8ff9d42396ffe5ee9c98739288b9524"
     pullPolicy: IfNotPresent
   serviceType: ClusterIP
 
