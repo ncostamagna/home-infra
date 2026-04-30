@@ -13,7 +13,7 @@ deployment:
       memory: 256Mi
   image:
     url: ncostamagna/passit-front
-    version: "4c9b953f1a6d8ca20df3e1ebd90febb0c4a5e3ca"
+    version: "57eef8c775b5f1f9f5888e5decb8a8ecbe0da8a3"
     pullPolicy: IfNotPresent
   serviceType: ClusterIP
 
