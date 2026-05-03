@@ -124,6 +124,14 @@ helm install passit-back ./passit-back --create-namespace --namespace axul
 helm upgrade passit-back ./passit-back --namespace axul
 ```
 
+# POstgress
+
+```sh
+ helm repo add bitnami https://charts.bitnami.com/bitnami  
+ helm repo update 
+helm install postgresql bitnami/postgresql --namespace postgresql --version 18.6.2 -f ./03-helmchart-values/postgresql/values.yaml --create-namespace
+```
+
 # Tunnel
 
 ```
@@ -153,3 +161,5 @@ helm pull nats/nack --untar --version 0.28.1
 ```sh
 ssh nahuel@192.168.0.115
 ```
+
+kubectl delete pod -n argocd -l app.kubernetes.io/name=argocd-repo-server  
