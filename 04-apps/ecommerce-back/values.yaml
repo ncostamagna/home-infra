@@ -20,6 +20,11 @@ deployment:
     http:
       targetPort: 8020
       nodePort: 30009
+migrations:
+  image:
+    url: ncostamagna/ecommerce-back-migrations
+    version: "d82bb35752826c7f6d61d2d74a6a189b2fead30f"
+
 secrets:
   database:
     url:

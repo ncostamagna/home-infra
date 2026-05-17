@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Values.name }}-migrations-{{ .Values.version }}"
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+      - name: "{{ .Values.name }}-migrations"
+        image: "{{ .Values.migrations.image.url }}:{{ .Values.migrations.image.version }}"
+        command: ["migrate"]
+        args: ["-path", "./migrations", "-database", "$(DATABASE_URL)", "-verbose", "up"]
+        env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: "{{ .Values.secrets.database.url.name }}"
+                key: "{{ .Values.secrets.database.url.key }}"
+      restartPolicy: Never
+  backoffLimit: 2
