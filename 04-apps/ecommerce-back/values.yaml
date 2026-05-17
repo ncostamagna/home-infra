@@ -88,10 +88,3 @@ ingress:
         - path: /
           pathType: Prefix
   tls: []
-
-
-
-kubectl run psql-tmp --rm -it --image=postgres:15 --restart=Never -n lapaltech -- psql "postgres://postgres:UKNSsGAZC9@devops-shared-svc-postgresql.postgresql.svc.cluster.local:5432/postgres"
-
-
-kubectl delete pod psql-tmp -n lapaltech && kubectl run psql-tmp --rm -it --image=postgres:15 --restart=Never -n lapaltech -- psql "postgres://postgres:UKNSsGAZC9@devops-shared-svc-postgresql.postgresql.svc.cluster.local:5432/postgres"
