@@ -13,7 +13,7 @@ deployment:
       memory: 256Mi
   image:
     url: ncostamagna/ecommerce-back
-    version: "877c659b21025749c9d1e4d0c51c914133ae0588"
+    version: "eb9e29932dad7b9d756d6724e69a076a8dc3e776"
     pullPolicy: IfNotPresent
 
   api:
@@ -23,7 +23,7 @@ deployment:
 migrations:
   image:
     url: ncostamagna/ecommerce-back-migrations
-    version: "d82bb35752826c7f6d61d2d74a6a189b2fead30f"
+    version: "eb9e29932dad7b9d756d6724e69a076a8dc3e776"
 
 secrets:
   database:
@@ -88,3 +88,10 @@ ingress:
         - path: /
           pathType: Prefix
   tls: []
+
+
+
+kubectl run psql-tmp --rm -it --image=postgres:15 --restart=Never -n lapaltech -- psql "postgres://postgres:UKNSsGAZC9@devops-shared-svc-postgresql.postgresql.svc.cluster.local:5432/postgres"
+
+
+kubectl delete pod psql-tmp -n lapaltech && kubectl run psql-tmp --rm -it --image=postgres:15 --restart=Never -n lapaltech -- psql "postgres://postgres:UKNSsGAZC9@devops-shared-svc-postgresql.postgresql.svc.cluster.local:5432/postgres"
