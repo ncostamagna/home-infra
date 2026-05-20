@@ -37,13 +37,20 @@ secrets:
     password:
       name: ecommerce-back-redis
       key: password
+  s3:
+    public_url:
+      name: ecommerce-back-s3
+      key: public_url
+    access_key_id:
+      name: ecommerce-back-s3
+      key: access_key_id
+    secret_access_key:
+      name: ecommerce-back-s3
+      key: secret_access_key
 config:
   app:
     port: 8020
     env: development
-
-  database:
-    url: postgres://ecommerce:ecommerce@localhost:5442/ecommerce?sslmode=disable
 
   redis:
     db: 3
@@ -56,12 +63,9 @@ config:
     api_key: re_MAEg8pdk_8K9asa6NMhYH9ajkbxDj2cpU
 
   s3:
-    bucket: ecommerce
-    public_url: http://localhost:4566/ecommerce
+    bucket: lpt-ecommerce-prod
     region: us-east-1
-    endpoint: http://localhost:4566
-    access_key_id: test
-    secret_access_key: test
+    endpoint: ""
 
 
 # DELETE ALL
