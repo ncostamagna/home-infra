@@ -27,6 +27,6 @@ spec:
   http:
   - route:
     - destination:
-        host: vault-ui
+        host: devops-shared-svc-vault-ui
         port:
           number: 8200
