@@ -29,6 +29,9 @@ spec:
             helmchart_name: vault
             helmchart_target_revision: 0.32.0
             values_branch: main
+          - name: vault-ingress
+            dst_namespace: vault
+            dst_cluster: in-cluster
           - name: passit-back
             dst_namespace: axul
           - name: passit-front
