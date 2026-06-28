@@ -124,13 +124,26 @@ helm install passit-back ./passit-back --create-namespace --namespace axul
 helm upgrade passit-back ./passit-back --namespace axul
 ```
 
-# POstgress
+# Postgres
+
+Managed by ArgoCD (element `postgresql` in `02-project-def/prod-appsets.yaml`,
+bitnami chart 18.6.2, values in `03-helmchart-values/postgresql/values.yaml`).
+No manual `helm install` — Argo syncs it.
+
+First-time only, apply the password secret (NOT committed):
 
 ```sh
- helm repo add bitnami https://charts.bitnami.com/bitnami  
- helm repo update 
-helm install postgresql bitnami/postgresql --namespace postgresql --version 18.6.2 -f ./03-helmchart-values/postgresql/values.yaml --create-namespace
+kubectl create ns postgresql --dry-run=client -o yaml | kubectl apply -f -
+# fill PASSWORD in 03-helmchart-values/postgresql/.secret.example, then:
+kubectl apply -f 03-helmchart-values/postgresql/secret.yaml
 ```
+
+Same password must go into `ecommerce-back-db` secret URL (see
+`04-apps/ecommerce-back/secret.example`). Service DNS:
+`postgresql.postgresql.svc.cluster.local:5432`, db `ecommerce`.
+
+Migrations run automatically as an ArgoCD PreSync hook job on every
+`ecommerce-back` sync (`04-apps/ecommerce-back/templates/migration.job.yaml`).
 
 # Tunnel
 
@@ -163,3 +176,11 @@ ssh nahuel@192.168.0.115
 ```
 
 kubectl delete pod -n argocd -l app.kubernetes.io/name=argocd-repo-server  
+
+
+kubectl run curl --image=curlimages/curl -it --rm --restart=Never -- curl -H "Host: vault.ncostamagna.com" http://istio-ingressgateway.istio-system.svc.cluster.local:80
+
+
+  kubectl logs -n cloudflared deployment/cloudflared --tail=50
+
+  sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder

@@ -1,0 +1,42 @@
+# Bitnami PostgreSQL override values (chart 18.6.2)
+# Full defaults: helm show values bitnami/postgresql --version 18.6.2
+# Single primary (standalone). App connects as `postgres` superuser to db `ecommerce`,
+# matching the ecommerce-back-db secret URL:
+#   postgres://postgres:<pwd>@postgresql.postgresql.svc.cluster.local:5432/ecommerce
+
+architecture: standalone
+
+auth:
+  # Password comes from a manually-applied secret (NOT committed). See .secret.example
+  # Required key in that secret: postgres-password
+  existingSecret: postgresql-secret
+  # Extra database created on first init
+  database: ecommerce
+
+primary:
+  persistence:
+    enabled: true
+    size: 10Gi
+    # empty => cluster default StorageClass (minikube: standard)
+    storageClass: ""
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  # Skip Istio sidecar injection on the DB pod
+  podAnnotations:
+    sidecar.istio.io/inject: "false"
+
+# Single primary cannot scale writes horizontally. To add read replicas later,
+# switch architecture to `replication` and set readReplicas.replicaCount.
+readReplicas:
+  replicaCount: 0
+
+metrics:
+  enabled: false
+
+volumePermissions:
+  enabled: true

@@ -68,12 +68,15 @@ config:
     endpoint: ""
 
 
-# DELETE ALL
+# Horizontal Pod Autoscaler. When enabled, HPA owns the replica count
+# (deployment.replicas is omitted). Requires metrics-server in the cluster
+# (minikube addons enable metrics-server).
 autoscaling:
-  enabled: false
-  minReplicas: 1
+  enabled: true
+  minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 

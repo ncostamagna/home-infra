@@ -8,7 +8,9 @@ metadata:
     environment: "{{ .Values.environment }}"
     version: "{{ .Values.version }}"
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{.Values.name}}

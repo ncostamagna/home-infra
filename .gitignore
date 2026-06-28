@@ -14,3 +14,4 @@
 98-terra/*.tfvars
 98-terra/*.tfvars.json
 04-apps/*/*/secret.yaml
+03-helmchart-values/*/secret.yaml

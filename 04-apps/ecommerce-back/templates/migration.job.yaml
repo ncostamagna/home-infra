@@ -12,6 +12,23 @@ spec:
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
+      initContainers:
+      # Wait for postgres to accept connections (postgres is a separate Argo app,
+      # so cross-app sync ordering is not guaranteed).
+      - name: wait-for-db
+        image: postgres:16-alpine
+        command: ["sh", "-c"]
+        args:
+          - |
+            until pg_isready -d "$DATABASE_URL"; do
+              echo "waiting for postgres..."; sleep 2;
+            done
+        env:
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: "{{ .Values.secrets.database.url.name }}"
+                key: "{{ .Values.secrets.database.url.key }}"
       containers:
       - name: "{{ .Values.name }}-migrations"
         image: "{{ .Values.migrations.image.url }}:{{ .Values.migrations.image.version }}"
@@ -24,4 +41,4 @@ spec:
                 name: "{{ .Values.secrets.database.url.name }}"
                 key: "{{ .Values.secrets.database.url.key }}"
       restartPolicy: Never
-  backoffLimit: 2
+  backoffLimit: 5
