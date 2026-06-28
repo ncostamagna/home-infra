@@ -126,21 +126,21 @@ helm upgrade passit-back ./passit-back --namespace axul
 
 # Postgres
 
-Managed by ArgoCD (element `postgresql` in `02-project-def/prod-appsets.yaml`,
-bitnami chart 18.6.2, values in `03-helmchart-values/postgresql/values.yaml`).
-No manual `helm install` — Argo syncs it.
+Managed by ArgoCD (element `postgresql-ecommerce` in `02-project-def/prod-appsets.yaml`,
+bitnami chart 18.6.2, values in `03-helmchart-values/postgresql-ecommerce/values.yaml`).
+Runs in its own namespace `postgresql-ecommerce`. No manual `helm install` — Argo syncs it.
 
 First-time only, apply the password secret (NOT committed):
 
 ```sh
-kubectl create ns postgresql --dry-run=client -o yaml | kubectl apply -f -
-# fill PASSWORD in 03-helmchart-values/postgresql/.secret.example, then:
-kubectl apply -f 03-helmchart-values/postgresql/secret.yaml
+kubectl create ns postgresql-ecommerce --dry-run=client -o yaml | kubectl apply -f -
+# fill PASSWORD in 03-helmchart-values/postgresql-ecommerce/.secret.example, then:
+kubectl apply -f 03-helmchart-values/postgresql-ecommerce/secret.yaml
 ```
 
 Same password must go into `ecommerce-back-db` secret URL (see
 `04-apps/ecommerce-back/secret.example`). Service DNS:
-`postgresql.postgresql.svc.cluster.local:5432`, db `ecommerce`.
+`postgresql.postgresql-ecommerce.svc.cluster.local:5432`, db `ecommerce`.
 
 Migrations run automatically as an ArgoCD PreSync hook job on every
 `ecommerce-back` sync (`04-apps/ecommerce-back/templates/migration.job.yaml`).

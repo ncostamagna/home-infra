@@ -2,9 +2,13 @@
 # Full defaults: helm show values bitnami/postgresql --version 18.6.2
 # Single primary (standalone). App connects as `postgres` superuser to db `ecommerce`,
 # matching the ecommerce-back-db secret URL:
-#   postgres://postgres:<pwd>@postgresql.postgresql.svc.cluster.local:5432/ecommerce
+#   postgres://postgres:<pwd>@postgresql.postgresql-ecommerce.svc.cluster.local:5432/ecommerce
 
 architecture: standalone
+
+# This instance lives in its own namespace (postgresql-ecommerce), so a generic
+# service name is fine. DNS: postgresql.postgresql-ecommerce.svc.cluster.local
+fullnameOverride: postgresql
 
 auth:
   # Password comes from a manually-applied secret (NOT committed). See .secret.example
