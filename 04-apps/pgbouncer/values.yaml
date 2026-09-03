@@ -1,0 +1,84 @@
+name: pgbouncer
+version: 1
+environment: development
+
+# 2 replicas so a node drain / pod restart does not drop every app connection at
+# once. Each replica keeps its OWN pool, so server-side connection math must be
+# done as: replicaCount * maxDbConnections (see the comment on maxDbConnections).
+replicaCount: 2
+
+deployment:
+  image:
+    # bitnami/pgbouncer no longer publishes tags on Docker Hub, so this uses the
+    # actively maintained edoburu image. Runs as non-root user `postgres`.
+    url: edoburu/pgbouncer
+    version: "v1.25.2-p0"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+service:
+  port: 6432
+
+# Upstream postgres this pooler fronts.
+upstream:
+  host: postgresql.postgresql-ecommerce.svc.cluster.local
+  port: 5432
+  database: ecommerce
+
+# Client auth credentials live in a manually-applied secret (NOT committed).
+# See secret.example. Key `userlist.txt`, mounted at /etc/pgbouncer/userlist.txt.
+secrets:
+  userlist:
+    name: pgbouncer-userlist
+    key: userlist.txt
+
+pgbouncer:
+  # transaction pooling is what makes this worth deploying: a server connection is
+  # held only for the duration of a transaction, so N idle app connections cost
+  # almost no server connections.
+  # WARNING: session-level state does not survive transaction pooling - no
+  # session advisory locks, no LISTEN/NOTIFY, no plain SET across transactions.
+  # This is exactly why the migration job bypasses pgbouncer (golang-migrate takes
+  # a session-level advisory lock).
+  poolMode: transaction
+
+  # Client-side ceiling. Cheap - these are just sockets on the pooler.
+  # ecommerce-back HPA maxes at 10 pods, so this has plenty of headroom.
+  maxClientConn: 1000
+
+  # Server-side pool per user/database pair.
+  defaultPoolSize: 20
+  minPoolSize: 5
+  reservePoolSize: 5
+  reservePoolTimeout: 3
+
+  # Hard cap of real postgres connections per database, PER REPLICA.
+  # postgres max_connections is 100 (default). 2 replicas * 40 = 80, leaving ~20
+  # for migrations, psql, and the metrics exporter, which all bypass the pooler.
+  # If you raise replicaCount, lower this to keep (replicas * value) <= ~80.
+  maxDbConnections: 40
+
+  # Required for transaction pooling with pgx/database-sql, which use
+  # protocol-level named prepared statements. With this at 0, the Go app would
+  # fail with "prepared statement does not exist" under transaction pooling.
+  maxPreparedStatements: 200
+
+  # pgx sends these in the startup packet; pgbouncer rejects unknown ones.
+  ignoreStartupParameters: extra_float_digits,search_path,options
+
+  # Must match the server's password_encryption. Postgres 14+ (and the Bitnami
+  # image) default to scram-sha-256.
+  authType: scram-sha-256
+
+  logConnections: 0
+  logDisconnections: 0
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

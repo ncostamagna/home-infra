@@ -1,0 +1,18 @@
+{{- if gt (int .Values.replicaCount) 1 }}
+# Every app connection goes through this pooler, so never let a drain evict all
+# replicas at once.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ .Values.name }}"
+    environment: "{{ .Values.environment }}"
+    version: "{{ .Values.version }}"
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+{{- end }}

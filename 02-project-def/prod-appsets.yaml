@@ -29,6 +29,10 @@ spec:
             helmchart_name: postgresql
             helmchart_target_revision: 18.6.2
             values_branch: main
+          # Local chart (no helmchart_repo_url) => synced from 04-apps/pgbouncer.
+          # Lives in the DB namespace so the pooler->postgres hop stays in-namespace.
+          - name: pgbouncer
+            dst_namespace: postgresql-ecommerce
           - name: vault
             dst_namespace: vault
             dst_cluster: in-cluster

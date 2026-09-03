@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: "{{ .Values.name }}"
+    environment: "{{ .Values.environment }}"
+    version: "{{ .Values.version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      annotations:
+        # restart pods when pgbouncer.ini changes (subPath mounts never auto-update)
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        # Match the postgres pod: no sidecar on the data path.
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      # Image runs as non-root user `postgres` already; this just pins the guarantee.
+      securityContext:
+        runAsNonRoot: true
+      # Spread the 2 replicas so one node going down does not take the pooler with it.
+      affinity:
+        {{- if .Values.affinity }}
+        {{- toYaml .Values.affinity | nindent 8 }}
+        {{- else }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: {{ .Values.name }}
+        {{- end }}
+      containers:
+        - name: {{ .Values.name }}
+          image: "{{ .Values.deployment.image.url }}:{{ .Values.deployment.image.version }}"
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          # NOTE: deliberately no DB_HOST / DB_USER / DATABASE_URL env vars.
+          # The image entrypoint only rewrites userlist.txt when those are set, and
+          # userlist.txt is mounted read-only from a Secret.
+          ports:
+            - name: postgres
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.deployment.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          # pgbouncer speaks the postgres wire protocol, not HTTP, so a TCP probe is
+          # the honest check here: it proves the listener is up, not that postgres
+          # behind it is healthy.
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          volumeMounts:
+            - name: config
+              mountPath: /etc/pgbouncer/pgbouncer.ini
+              subPath: pgbouncer.ini
+              readOnly: true
+            - name: userlist
+              mountPath: /etc/pgbouncer/userlist.txt
+              subPath: userlist.txt
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: "{{ .Values.name }}-{{ .Values.version }}"
+        - name: userlist
+          secret:
+            secretName: {{ .Values.secrets.userlist.name }}
+            items:
+              - key: {{ .Values.secrets.userlist.key }}
+                path: userlist.txt
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
