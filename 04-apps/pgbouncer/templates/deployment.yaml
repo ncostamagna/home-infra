@@ -23,8 +23,14 @@ spec:
         app: {{ .Values.name }}
     spec:
       # Image runs as non-root user `postgres` already; this just pins the guarantee.
+      # runAsUser/runAsGroup MUST be numeric: the edoburu image declares its user by
+      # name (`postgres` = uid/gid 70), and with only runAsNonRoot the kubelet cannot
+      # verify a named user is non-root, so it fails with CreateContainerConfigError.
       securityContext:
         runAsNonRoot: true
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
       # Spread the 2 replicas so one node going down does not take the pooler with it.
       affinity:
         {{- if .Values.affinity }}
