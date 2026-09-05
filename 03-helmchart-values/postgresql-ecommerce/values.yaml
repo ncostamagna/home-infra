@@ -1,7 +1,10 @@
 # Bitnami PostgreSQL override values (chart 18.6.2)
 # Full defaults: helm show values bitnami/postgresql --version 18.6.2
-# Single primary (standalone). App connects as `postgres` superuser to db `ecommerce`,
-# matching the ecommerce-back-db secret URL:
+# Single primary (standalone). Apps do NOT connect here directly any more - they go
+# through pgbouncer (04-apps/pgbouncer), which fans many app connections into a small
+# pool of real server connections:
+#   ecommerce-back (HPA 2-10 pods) -> pgbouncer:6432 -> postgresql:5432
+# Only migrations and admin tasks connect straight to this service:
 #   postgres://postgres:<pwd>@postgresql.postgresql-ecommerce.svc.cluster.local:5432/ecommerce
 
 architecture: standalone
@@ -25,11 +28,61 @@ primary:
     storageClass: ""
   resources:
     requests:
-      cpu: 250m
-      memory: 256Mi
-    limits:
-      cpu: "1"
+      cpu: 500m
       memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+
+  # Appended to the container's postgresql.conf (last value wins).
+  # `shared_preload_libraries` MUST repeat pgaudit - the Bitnami image sets it by
+  # default, and this line replaces it rather than adding to it.
+  # Changing shared_preload_libraries requires a pod restart to take effect.
+  extendedConfiguration: |
+    shared_preload_libraries = 'pgaudit, pg_stat_statements'
+
+    # --- measurement ---
+    pg_stat_statements.max = 5000
+    pg_stat_statements.track = top
+    # Log any statement slower than 500ms so slow queries show up in pod logs.
+    log_min_duration_statement = 500ms
+    # Needed by the postgres_exporter / pg_stat_statements for I/O timings.
+    track_io_timing = on
+
+    # --- memory (sized against the 2Gi limit above) ---
+    shared_buffers = 512MB
+    effective_cache_size = 1536MB
+    work_mem = 8MB
+    maintenance_work_mem = 128MB
+
+    # --- write path ---
+    # Fewer, larger checkpoints => fewer write stalls under load.
+    checkpoint_timeout = 15min
+    max_wal_size = 4GB
+    min_wal_size = 1GB
+    checkpoint_completion_target = 0.9
+    wal_compression = on
+
+    # DURABILITY TRADEOFF - left ON deliberately.
+    # Setting this to `off` typically gives 3-5x write throughput, but a crash can
+    # lose the last few hundred ms of already-committed transactions (no corruption).
+    # Do NOT enable it for order/payment writes. Measure first (see readme.md).
+    # synchronous_commit = off
+
+  # Runs ONLY on a fresh data directory (first init of an empty PVC).
+  # The existing volume already skipped this - see readme.md for the manual
+  # `CREATE EXTENSION` needed on the current install.
+  # The extension is per-database, and the exporter queries `postgres` while the app
+  # uses `ecommerce`, so create it in both. \connect is explicit on purpose - do not
+  # rely on which database the init script defaults to.
+  initdb:
+    scripts:
+      01-pg-stat-statements.sql: |
+        \connect postgres
+        CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+        \connect ecommerce
+        CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+
   # Skip Istio sidecar injection on the DB pod
   podAnnotations:
     sidecar.istio.io/inject: "false"
@@ -39,8 +92,23 @@ primary:
 readReplicas:
   replicaCount: 0
 
+# postgres_exporter sidecar on port 9187. The chart already puts
+# prometheus.io/scrape annotations on the metrics service, which is what a plain
+# Prometheus scrape-config picks up.
 metrics:
-  enabled: false
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  # No Prometheus Operator in this cluster (nothing in 02-project-def installs the
+  # CRDs), so ServiceMonitor stays off - enabling it would make Argo fail on a
+  # missing CRD. Flip to true after adding kube-prometheus-stack.
+  serviceMonitor:
+    enabled: false
 
 volumePermissions:
   enabled: true

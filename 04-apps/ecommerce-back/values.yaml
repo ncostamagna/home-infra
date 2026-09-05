@@ -30,6 +30,9 @@ secrets:
     url:
       name: ecommerce-back-db
       key: url
+    direct_url:
+      name: ecommerce-back-db
+      key: direct_url
   redis:
     addr:
       name: ecommerce-back-redis
@@ -60,7 +63,7 @@ config:
     expiry_hours: 24
 
   resend:
-    api_key: re_MAEg8pdk_8K9asa6NMhYH9ajkbxDj2cpU
+    api_key: [key]
 
   s3:
     bucket: lpt-ecommerce-prod

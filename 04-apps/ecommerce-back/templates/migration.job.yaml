@@ -15,6 +15,9 @@ spec:
       initContainers:
       # Wait for postgres to accept connections (postgres is a separate Argo app,
       # so cross-app sync ordering is not guaranteed).
+      # Both containers use direct_url - migrations MUST NOT go through pgbouncer,
+      # because golang-migrate holds a session-level advisory lock for the whole
+      # run and transaction pooling would hand it a different backend mid-flight.
       - name: wait-for-db
         image: postgres:16-alpine
         command: ["sh", "-c"]
@@ -27,8 +30,8 @@ spec:
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
-                name: "{{ .Values.secrets.database.url.name }}"
-                key: "{{ .Values.secrets.database.url.key }}"
+                name: "{{ .Values.secrets.database.direct_url.name }}"
+                key: "{{ .Values.secrets.database.direct_url.key }}"
       containers:
       - name: "{{ .Values.name }}-migrations"
         image: "{{ .Values.migrations.image.url }}:{{ .Values.migrations.image.version }}"
@@ -38,7 +41,7 @@ spec:
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
-                name: "{{ .Values.secrets.database.url.name }}"
-                key: "{{ .Values.secrets.database.url.key }}"
+                name: "{{ .Values.secrets.database.direct_url.name }}"
+                key: "{{ .Values.secrets.database.direct_url.key }}"
       restartPolicy: Never
   backoffLimit: 5
