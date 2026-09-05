@@ -50,6 +50,13 @@ secrets:
     secret_access_key:
       name: ecommerce-back-s3
       key: secret_access_key
+  # Injected as env RESEND_API_KEY; the app's config loader maps that to
+  # resend.api_key (overrides the config file). Kept out of the ConfigMap so the
+  # key never lands in git or a plaintext ConfigMap.
+  resend:
+    api_key:
+      name: ecommerce-back-resend
+      key: api_key
 config:
   app:
     port: 8020
@@ -61,9 +68,6 @@ config:
   jwt:
     secret: supersecretkey
     expiry_hours: 24
-
-  resend:
-    api_key: [key]
 
   s3:
     bucket: lpt-ecommerce-prod
